@@ -12,17 +12,20 @@ class CSGORun:
 		self.name = 'csgorun'
 		self.url = 'https://api.csgorun.pro/games/'
 
-		service_path = os.path.join(Path(__file__).parent, self.name)
+		provider_path = os.path.join(Path(__file__).parent, self.name)
 
-		if not os.path.isdir(service_path):
-			os.mkdir(service_path)
+		if not os.path.isdir(provider_path):
+			os.mkdir(provider_path)
 
-		self.games_path = os.path.join(service_path, 'games.json')
-		self.data_path = os.path.join(service_path, 'data.csv')
-		self.model_path = os.path.join(service_path, 'model.pkl')
+		self.games_path = os.path.join(provider_path, 'games.json')
+		self.data_path = os.path.join(provider_path, 'data.csv')
+		self.model_path = os.path.join(provider_path, 'model.pkl')
 		self.config_path = 'config-feedforward.txt'
 
 		self.games_data = []
+
+	def __str__(self):
+		return 'CSGORun'
 
 	@property
 	def last_game_id(self):
@@ -91,6 +94,8 @@ class CSGORun:
 		game_id = start
 
 		while len(games_data) != count:
+			print(len(games_data))
+			
 			data = self.get_game_data(game_id)
 
 			if data and len(data['bets']) == 10:
@@ -127,6 +132,9 @@ class CSGORun:
 				withdraw = bet['withdraw']
 
 				game_data += f'{coefficient},{coefficient_auto},{deposit},{withdraw},'
+
+			if 'None' in game_data:
+				continue
 
 			game_data += str(crash)
 
@@ -238,6 +246,8 @@ class CSGORun:
 					if players[i].balance > max_balance:
 						max_balance = players[i].balance
 
+			print(max_balance, remaining_players)
+
 			if not remaining_players:
 				break
 
@@ -255,7 +265,7 @@ class Player:
 		return self.balance > 2000
 
 	def win(self):
-		self.balance += self.bet * 1.5
+		self.balance += self.bet * 0.5
 
 		if self.bet != 100:
 			self.bet //= 2
@@ -273,3 +283,6 @@ class Player:
 
 		else:
 			self.authority += 1
+
+
+__all__ = [CSGORun]
