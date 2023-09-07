@@ -37,6 +37,15 @@ def application():
         os.kill(os.getpid(), signal.SIGTERM)
 
 
+@eel.expose()
+def download_update():
+    eel.call_alert(
+        'error',
+        'Error',
+        'Some error occured.'
+    )
+
+
 providers = get_providers()
 
 c = providers['csgorun']
