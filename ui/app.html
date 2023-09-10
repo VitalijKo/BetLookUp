@@ -11,10 +11,67 @@
     <link rel="stylesheet" href="./home/main.css">
 </head>
 <div class="preloader">
-    <div class="spinner"></div>
+    <div class="loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 </div>
 
+<div id="bg"></div>
+
 <body>
+    <form class="app-form">
+        <div class="container">
+            <h1>BetLookUp</h1>
+            <ul>
+                <li>
+                    <select>
+                        <option selected disabled>-- Provider --</option>
+                        <option>Request Quote</option>
+                    </select>
+                </li>
+                <li>
+                    <select>
+                        <option selected disabled>-- Action --</option>
+                        <option>Request Quote</option>
+                    </select>
+                </li>
+                <li>
+                    <input type="number" min="100" max="100000" placeholder="10000" required>
+                </li>
+                <li>
+                    <input type="number" min="1.5" max="2" step="0.1" placeholder="1,5" required>
+                </li>
+                <li>
+                    <input type="checkbox" id="online">
+                    <label for="online">Online mode</label>
+                </li>
+                <li>
+                    <textarea>XXX</textarea>
+                </li>
+                <li>
+                    <button type="submit" disabled>
+                        <span class="front">RUN</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </form>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src="./eel.js"></script>
     <script src="./home/main.js"></script>
 </body>
