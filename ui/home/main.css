@@ -12,7 +12,6 @@ body {
   color: #fff;
   overflow: hidden;
   font: 18px/1.5 'Lexend', sans-serif;
-  margin: 1.5rem 0;
 }
 
 a {
@@ -69,6 +68,37 @@ i {
     opacity: 1;
 }
 
+footer {
+  font-size: 1rem;
+  text-align: right;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+footer span {
+  color: #cf000f;
+}
+
+#bg {
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    background: #000;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+    transition: opacity 0.5s linear;
+}
+
 .container {
   text-align: center;
   max-width: 800px;
@@ -76,9 +106,27 @@ i {
   padding: 0 1.5rem;
 }
 
+.header {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  grid-gap: 10px;
+  margin: 1rem 0;
+}
+
+.header img {
+  width: 64px;
+  height: 64px;
+}
+
+.settings {
+  min-height: 300px;
+}
+
 .app-form h1 {
   text-align: center;
-  margin-bottom: 1.5rem;
+  line-height: 0.5;
+  margin-bottom: 3rem;
 }
 
 .app-form li,
@@ -101,7 +149,7 @@ i {
 }
 
 .app-form textarea {
-  height: 300px;
+  height: 450px;
 }
 
 .app-form ::-moz-placeholder {
@@ -121,15 +169,13 @@ i {
 
 .app-form select:focus,
 .app-form input:focus,
-.app-form textarea:focus,
 .app-form button:enabled:hover,
 .app-form button:focus {
   background: hsl(0, 70%, 20%);
 }
 
 .app-form select:focus,
-.app-form input:focus,
-.app-form textarea:focus {
+.app-form input:focus {
   transform: scale(1.02);
 }
 
@@ -161,29 +207,13 @@ i {
 
 .app-form button {
   font-weight: bold;
+  margin-top: -100%;
 }
 
 .app-form button > * {
   display: inline-block;
   width: 100%;
   transition: transform 0.4s ease-in-out;
-}
-
-.app-form button .back {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-110%, -50%);
-}
-
-.app-form button:enabled:hover .back,
-.app-form button:focus .back {
-  transform: translate(-50%, -50%);
-}
-
-.app-form button:enabled:hover .front,
-.app-form button:focus .front {
-  transform: translateX(110%);
 }
 
 .app-form input[type='checkbox'] {
@@ -226,21 +256,6 @@ i {
   transform: rotate(45deg);
 }
 
-footer {
-  font-size: 1rem;
-  text-align: right;
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-}
-
-footer a {
-  text-decoration: none;
-}
-
-footer span {
-  color: #cf000f;
-}
-
 @media screen and (min-width: 600px) {
   .app-form .grid {
     display: grid;
@@ -270,20 +285,4 @@ footer span {
   .app-form input[type='checkbox']:checked + label::after {
     top: 3px;
   }
-}
-
-#bg {
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    background: #000;
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    left: 0;
-    top: 0;
-    position: absolute;
-    width: 100%;
-    z-index: -1;
-    transition: opacity 0.5s linear;
 }

@@ -9,7 +9,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #fc5d14;
+    background-color: #cf000f;
     background-image: -webkit-linear-gradient(45deg,
         rgba(255, 255, 255, .2) 25%,
         transparent 25%,

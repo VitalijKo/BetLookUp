@@ -24,8 +24,8 @@ def application():
         cmdline_args=[
             '--incognito',
             '--no-experiments',
-            '--window-size=700,100',
-            '--window-position=700,220'
+            '--window-size=700,1000',
+            '--window-position=700,50'
         ]
     )
 

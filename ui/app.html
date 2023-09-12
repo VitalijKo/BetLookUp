@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>BetLookUp</title>
-    <link rel="icon" type="image/ico" sizes="16x16, 64x64" href="./favicon.ico">
+    <link rel="icon" type="image/png" href="./logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel="stylesheet" href="./preloader/main.css">
     <link rel="stylesheet" href="./scrollbar/main.css">
@@ -36,42 +36,65 @@
 <body>
     <form class="app-form">
         <div class="container">
-            <h1>BetLookUp</h1>
-            <ul>
-                <li>
-                    <select>
-                        <option selected disabled>-- Provider --</option>
-                        <option>Request Quote</option>
-                    </select>
-                </li>
-                <li>
-                    <select>
-                        <option selected disabled>-- Action --</option>
-                        <option>Request Quote</option>
-                    </select>
-                </li>
-                <li>
-                    <input type="number" min="100" max="100000" placeholder="10000" required>
-                </li>
-                <li>
-                    <input type="number" min="1.5" max="2" step="0.1" placeholder="1,5" required>
-                </li>
-                <li>
-                    <input type="checkbox" id="online">
-                    <label for="online">Online mode</label>
-                </li>
-                <li>
-                    <textarea>XXX</textarea>
-                </li>
-                <li>
-                    <button type="submit" disabled>
-                        <span class="front">RUN</span>
-                    </button>
-                </li>
-            </ul>
+            <div>
+                <div class="header">
+                    <img src="logo.png" class="logo">
+                    <h1>BetLookUp</h1>
+                </div>
+                <div class="settings">
+                    <ul>
+                        <li>
+                            <select id="provider">
+                                <option selected disabled>-- Provider --</option>
+                                <option>Request Quote</option>
+                            </select>
+                        </li>
+                        <li>
+                            <select id="action" hidden>
+                                <option selected disabled>-- Action --</option>
+                                <option value="0">Download data</option>
+                                <option value="1">Prepare data</option>
+                                <option value="2">Train model</option>
+                                <option value="3">Predict</option>
+                            </select>
+                        </li>
+                        <div id="download" hidden>
+                            <li>
+                                <input type="number" name="start" min="100" max="100000" placeholder="Start">
+                            </li>
+                            <li>
+                                <input type="number" name="count" min="100" max="100000" placeholder="Count">
+                            </li>
+                        </div>
+                        <div id="prepare" hidden>
+                        </div>
+                        <div id="train" hidden>
+                            <li>
+                                <input type="number" name="multiplier" min="1.5" max="2" step="0.1" placeholder="Multiplier">
+                            </li>
+                        </div>
+                        <div id="predict" hidden>
+                            <li>
+                                <input type="checkbox" name="online" id="online">
+                                <label for="online">Online mode</label>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+                <ul>
+                    <li>
+                        <textarea readonly></textarea>
+                    </li>
+                    <li>
+                        <button type="submit" disabled>
+                            <span>RUN</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </form>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/2.0.6/velocity.min.js" integrity="sha512-+VS2+Nl1Qit71a/lbncmVsWOZ0BmPDkopw5sXAS2W+OfeceCEd9OGTQWjgVgP5QaMV4ddqOIW9XLW7UVFzkMAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./eel.js"></script>
     <script src="./home/main.js"></script>
 </body>
