@@ -9,6 +9,7 @@ from pathlib import Path
 
 class CSGORun:
 	def __init__(self):
+		self.service_name = self.__class__.__name__
 		self.name = 'csgorun'
 		self.url = 'https://api.csgorun.pro/games/'
 

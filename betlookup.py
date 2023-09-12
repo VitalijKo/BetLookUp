@@ -16,30 +16,53 @@ def get_providers():
 	return providers_data
 
 
+def download(provider, settings):
+	...
+
+
+def prepare(provider, settings):
+	...
+
+
+def train(provider, settings):
+	...
+
+
+def predict(provider, settings):
+	...
+
+
 def application():
-    eel.init('ui')
-    eel.start(
-    	'app.html',
-        disable_cache=True,
-        cmdline_args=[
-            '--incognito',
-            '--no-experiments',
-            '--window-size=700,1000',
-            '--window-position=700,50'
-        ]
-    )
+	eel.init('ui')
+	eel.start(
+		'app.html',
+		disable_cache=True,
+		cmdline_args=[
+			'--incognito',
+			'--no-experiments',
+			'--window-size=700,1000',
+			'--window-position=700,50'
+		]
+	)
 
 
 @eel.expose()
-def download_update():
-    eel.call_alert(
-        'error',
-        'Error',
-        'Some error occured.'
-    )
+def load_providers():
+	providers_names = {provider: providers[provider].service_name for provider in providers}
+
+	eel.load_providers(providers_names)
+
+
+@eel.expose()
+def run(provider, action, settings):
+	actions[action](provider, settings)
+
+
+actions = [download, prepare, train, predict]
 
 
 providers = get_providers()
+
 
 
 # c.download_data(4000000, 50000)

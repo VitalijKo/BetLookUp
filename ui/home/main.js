@@ -10,9 +10,10 @@ var predict_menu = document.getElementById('predict');
 var inputs = document.querySelectorAll('input');
 var button = document.querySelector('button');
 var menu_list = [download_menu, prepare_menu, train_menu, predict_menu];
+var providers = {};
 var provider = null;
 var action = null;
-var settings = [];
+var settings = {};
 
 setTimeout(() => {
     const preloader = document.querySelector('.preloader');
@@ -29,11 +30,10 @@ setTimeout(() => {
 window.onresize = () => {
     if (window.innerWidth > 700) window.resizeTo(700, 1000);
 
-    winsize();
+    changeWindowSize();
 };
 
 form.onsubmit = (e) => {
-    console.log(111);
     e.preventDefault();
 
     run();
@@ -50,14 +50,14 @@ action_select.onchange = () => {
 
     menu_list[action_select.value].removeAttribute('hidden');
 
-    action = action_select.value;
+    action = parseInt(action_select.value);
 
     inputs[0].onchange()
 }
 
 for (let i = 0; i < inputs.length; i++) {
     inputs[i].onchange = () => {
-        settings[inputs[i].name] = inputs[i].value;
+        settings[inputs[i].name] = inputs[i].valueAsNumber;
 
         if (inputs[i].name == 'online') settings[inputs[i].name] = inputs[i].checked;
 
@@ -73,7 +73,7 @@ for (let i = 0; i < inputs.length; i++) {
     };
 }
 
-function init() {
+function initBackground() {
     bg.innerHTML = '';
 
     for (let i = 0; i < 100; i++) {
@@ -104,22 +104,28 @@ function update(dot) {
     Velocity(dot, a, d, function() { update(dot) });
 }
 
-function winsize() {
+function changeWindowSize() {
     ww = window.innerWidth;
     wh = window.innerHeight;
 }
 
 function run() {
-    console.log(provider);
-    console.log(settings)
+    eel.run(provider, action, settings);
 }
 
-winsize();
-init();
+eel.expose(load_providers);
 
-// eel.expose(set_account_info);
-// function set_account_info(acc_name, player_icon) {
-//     account_name.innerHTML = acc_name;
-//     account_image.innerHTML = '<img src="' + player_icon + '">';
-// }
+function load_providers(providers) {
+    for (p in providers) {
+        option = document.createElement('option');
+        option.innerHTML = providers[p];
+        option.value = p;
 
+        provider_select.appendChild(option);
+    }
+}
+
+changeWindowSize();
+initBackground();
+
+eel.load_providers();
