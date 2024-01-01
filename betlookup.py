@@ -30,8 +30,8 @@ def get_providers():
 
 
 def download(provider, settings):
-	start = settings.get('start', None)
-	count = settings.get('count', None)
+	start = settings.get('start')
+	count = settings.get('count')
 
 	if not isinstance(start, int) or not isinstance(count, int):
 		return 1
@@ -50,8 +50,8 @@ def train(provider, settings):
 
 
 def predict(provider, settings):
-	balance = settings.get('balance', None)
-	bet = settings.get('bet', None)
+	balance = settings.get('balance')
+	bet = settings.get('bet')
 
 	if not isinstance(balance, int) or not isinstance(bet, int):
 		return 1
@@ -101,5 +101,3 @@ actions = [download, process, train, predict]
 providers = get_providers()
 
 application()
-
-# providers['csgorun'].predict(10000, 100)

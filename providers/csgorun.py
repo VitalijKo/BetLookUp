@@ -10,7 +10,7 @@ from pathlib import Path
 class CSGORun:
 	def __init__(self, log, check):
 		self.service_name = self.__class__.__name__
-		self.name = 'csgorun'
+		self.name = self.service_name.lower()
 		self.url = 'https://onemails.net/games/'
 
 		provider_path = os.path.join(Path(__file__).parent, self.name)
@@ -30,7 +30,7 @@ class CSGORun:
 		self.games_data = []
 
 	def __str__(self):
-		return 'CSGORun'
+		return self.service_name
 
 	@property
 	def last_game_id(self):
