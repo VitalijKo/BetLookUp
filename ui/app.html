@@ -52,48 +52,49 @@
                             <select id="action" hidden>
                                 <option selected disabled>-- Action --</option>
                                 <option value="0">Download data</option>
-                                <option value="1">Prepare data</option>
+                                <option value="1">Process data</option>
                                 <option value="2">Train model</option>
                                 <option value="3">Predict</option>
                             </select>
                         </li>
                         <div id="download" hidden>
                             <li>
-                                <input type="number" name="start" min="100" max="100000" placeholder="Start">
+                                <input type="number" name="start" min="3000000" max="5000000" placeholder="Start">
                             </li>
                             <li>
                                 <input type="number" name="count" min="100" max="100000" placeholder="Count">
                             </li>
                         </div>
-                        <div id="prepare" hidden>
+                        <div id="process" hidden>
                         </div>
                         <div id="train" hidden>
-                            <li>
-                                <input type="number" name="multiplier" min="1.5" max="2" step="0.1" placeholder="Multiplier">
-                            </li>
                         </div>
                         <div id="predict" hidden>
                             <li>
-                                <input type="checkbox" name="online" id="online">
-                                <label for="online">Online mode</label>
+                                <input type="number" name="balance" min="100" max="100000" placeholder="Balance">
+                            </li>
+                            <li>
+                                <input type="number" name="bet" min="100" max="10000" placeholder="Bet">
                             </li>
                         </div>
                     </ul>
                 </div>
                 <ul>
                     <li>
-                        <textarea readonly></textarea>
+                        <div id="terminal">
+                            <div id="logs"></div>
+                            <span id="typed-cursor"></span>
+                        </div>
                     </li>
                     <li>
-                        <button type="submit" disabled>
-                            <span>RUN</span>
-                        </button>
+                        <button type="submit" disabled>RUN</button>
                     </li>
                 </ul>
             </div>
         </div>
     </form>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/2.0.6/velocity.min.js" integrity="sha512-+VS2+Nl1Qit71a/lbncmVsWOZ0BmPDkopw5sXAS2W+OfeceCEd9OGTQWjgVgP5QaMV4ddqOIW9XLW7UVFzkMAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.1.0/typed.umd.js" integrity="sha512-+2pW8xXU/rNr7VS+H62aqapfRpqFwnSQh9ap6THjsm41AxgA0MhFRtfrABS+Lx2KHJn82UOrnBKhjZOXpom2LQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./eel.js"></script>
     <script src="./home/main.js"></script>
 </body>

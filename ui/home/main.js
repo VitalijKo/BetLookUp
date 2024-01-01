@@ -1,19 +1,21 @@
 var mr = (n) => Math.random() * (n || 1);
 var bg = document.getElementById('bg');
-var form = document.getElementsByClassName('app-form')[0];
+var form = document.querySelector('.app-form');
 var provider_select = document.getElementById('provider');
 var action_select = document.getElementById('action');
 var download_menu = document.getElementById('download');
-var prepare_menu = document.getElementById('prepare');
+var process_menu = document.getElementById('process');
 var train_menu = document.getElementById('train');
 var predict_menu = document.getElementById('predict');
 var inputs = document.querySelectorAll('input');
 var button = document.querySelector('button');
-var menu_list = [download_menu, prepare_menu, train_menu, predict_menu];
+var logs = document.getElementById('logs');
+var menu_list = [download_menu, process_menu, train_menu, predict_menu];
 var providers = {};
 var provider = null;
 var action = null;
 var settings = {};
+var running = false;
 
 setTimeout(() => {
     const preloader = document.querySelector('.preloader');
@@ -36,41 +38,10 @@ window.onresize = () => {
 form.onsubmit = (e) => {
     e.preventDefault();
 
-    run();
-}
+    if (!running) eel.run(provider, action, settings)();
 
-provider_select.onchange = () => {
-    action_select.removeAttribute('hidden');
-
-    provider = provider_select.value;
-}
-
-action_select.onchange = () => {
-    for (menu of menu_list) menu.setAttribute('hidden', true);
-
-    menu_list[action_select.value].removeAttribute('hidden');
-
-    action = parseInt(action_select.value);
-
-    inputs[0].onchange()
-}
-
-for (let i = 0; i < inputs.length; i++) {
-    inputs[i].onchange = () => {
-        settings[inputs[i].name] = inputs[i].valueAsNumber;
-
-        if (inputs[i].name == 'online') settings[inputs[i].name] = inputs[i].checked;
-
-        if (action == 0 && settings.start && settings.count) button.disabled = false;
-        
-        else if (action == 1) button.disabled = false;
-
-        else if (action == 2 && settings.multiplier) button.disabled = false;
-
-        else if (action == 3) button.disabled = false;
-
-        else button.disabled = true; 
-    };
+    running = !running;
+    button.innerHTML = running ? 'STOP' : 'RUN';
 }
 
 function initBackground() {
@@ -109,10 +80,6 @@ function changeWindowSize() {
     wh = window.innerHeight;
 }
 
-function run() {
-    eel.run(provider, action, settings);
-}
-
 eel.expose(load_providers);
 
 function load_providers(providers) {
@@ -123,6 +90,73 @@ function load_providers(providers) {
 
         provider_select.appendChild(option);
     }
+}
+
+eel.expose(get_running);
+
+function get_running() {
+    return running;
+}
+
+eel.expose(stop);
+
+function stop() {
+    running = false;
+    button.innerHTML = 'RUN';
+}
+
+eel.expose(log);
+
+function log(message) {
+    if (!message) logs.innerHTML = '';
+
+    else {
+        p = document.createElement('p');
+
+        logs.appendChild(p);
+
+        var typed = new Typed(p, {
+            strings: [message],
+            stringsElement: null,
+            typeSpeed: 20,
+            showCursor: false,
+            autoInsertCss: true,
+            attr: null,
+            contentType: 'html'
+        });
+    }
+}
+
+provider_select.onchange = () => {
+    action_select.removeAttribute('hidden');
+
+    provider = provider_select.value;
+}
+
+action_select.onchange = () => {
+    for (menu of menu_list) menu.setAttribute('hidden', true);
+
+    menu_list[action_select.value].removeAttribute('hidden');
+
+    action = parseInt(action_select.value);
+
+    inputs[0].onchange();
+}
+
+for (let i = 0; i < inputs.length; i++) {
+    inputs[i].onchange = () => {
+        settings[inputs[i].name] = inputs[i].valueAsNumber;
+
+        if (inputs[i].name == 'online') settings[inputs[i].name] = inputs[i].checked;
+
+        if (action == 0 && settings.start && settings.count) button.disabled = false;
+        
+        else if (action == 1 || action == 2) button.disabled = false;
+
+        else if (action == 3) button.disabled = false;
+
+        else button.disabled = true; 
+    };
 }
 
 changeWindowSize();
