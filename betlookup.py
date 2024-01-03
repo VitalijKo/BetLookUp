@@ -45,8 +45,13 @@ def process(provider, settings):
 
 
 def train(provider, settings):
+	multiplier = settings.get('multiplier')
+
+	if not isinstance(multiplier, float):
+		return 1
+
 	provider.running = True
-	provider.train_model()
+	provider.train_model(multiplier)
 
 
 def predict(provider, settings):
@@ -57,6 +62,7 @@ def predict(provider, settings):
 		return 1
 
 	provider.running = True
+	provider.real = True
 	provider.predict(balance, bet)
 
 
@@ -92,6 +98,7 @@ def run(provider, action, settings):
 		return 1
 
 	provider.running = False
+	provider.real = False
 
 	eel.stop()
 

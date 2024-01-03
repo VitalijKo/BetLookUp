@@ -151,7 +151,9 @@ for (let i = 0; i < inputs.length; i++) {
 
         if (action == 0 && settings.start && settings.count) button.disabled = false;
         
-        else if (action == 1 || action == 2) button.disabled = false;
+        else if (action == 1) button.disabled = false;
+
+        else if (action == 2 || settings.multiplier) button.disabled = false;
 
         else if (action == 3) button.disabled = false;
 

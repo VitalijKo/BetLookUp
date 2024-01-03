@@ -1,8 +1,9 @@
 import requests
 import neat
-import os
-import pickle
 import json
+import pickle
+import os
+import random
 import time
 from pathlib import Path
 
@@ -27,6 +28,8 @@ class CSGORun:
 		self.check = check
 
 		self.running = False
+		self.real = False
+		self.multiplier = None
 		self.games_data = []
 
 	def __str__(self):
@@ -237,19 +240,17 @@ class CSGORun:
 
 		try:
 			with open(self.data_path) as data_file:
-				data = data_file.read().splitlines()
+				self.games_data = data_file.read().splitlines()
 		except:
 			self.log('[red]Data file not found![end]')
 
 			return
 
 		try:
-			for i in range(len(data)):
-				data[i] = list(map(float, data[i].split(',')))
+			for i in range(len(self.games_data)):
+				self.games_data[i] = list(map(float, self.games_data[i].split(',')))
 		except:
 			self.log('[red]Data file is invalid![end]')
-
-		self.games_data = data
 
 		self.log('[green]Data loaded![end]')
 
@@ -275,7 +276,7 @@ class CSGORun:
 
 		return genome
 
-	def train_model(self):
+	def train_model(self, multiplier):
 		self.log()
 
 		config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, self.config_path)
@@ -288,11 +289,11 @@ class CSGORun:
 
 		p.add_reporter(stats)
 
-		self.load_data()
+		self.multiplier = multiplier
 
-		self.log('[yellow]Training model...[end]')
+		winner = p.run(self.simulation, 10)
 
-		winner = p.run(self.simulation, 100)
+		self.multiplier = None
 
 		self.log('[green]Training done![end]')
 
@@ -392,19 +393,17 @@ class CSGORun:
 				return
 
 			self.log(f'Result: [{color}]x{crash}[end]')
-			self.log(f'Balance: [yellow]{player.balance}[end] Bet: [yellow]{player.bet}[end]')
+			self.log(f'Balance: [yellow]{player.balance}$[end] Bet: [yellow]{player.bet}$[end]')
 
 	def simulation(self, genomes, config):
 		nets = []
 		players = []
 		max_balance = 0
-		real = False
+		x = 0
 
-		if not self.games_data:
+		if not self.real:
 			self.load_data()
-
-		else:
-			real = True
+			self.log('[yellow]Training model...[end]')
 
 		for _, g in genomes:
 			net = neat.nn.FeedForwardNetwork.create(g, config)
@@ -415,12 +414,17 @@ class CSGORun:
 			players.append(Player())
 
 		while self.games_data:
-			data = self.games_data.pop(0)
+			x += 1
 
-			if real:
+			i = random.randint(0, len(self.games_data) - 1)
+
+			data = self.games_data.pop(i)
+
+			if self.real:
 				return max(nets[0].activate(data))
 
 			game = data[:205]
+
 			result = float(data[205]) >= 1.5
 
 			for i in range(len(players)):
@@ -444,7 +448,9 @@ class CSGORun:
 				if players[i].alive:
 					remaining_players += 1
 
-					genomes[i][1].fitness += players[i].authority
+					genomes[i][1].fitness = players[i].authority
+
+					print(x, genomes[i][1].fitness)
 
 					if players[i].balance > max_balance:
 						max_balance = players[i].balance
@@ -473,19 +479,19 @@ class Player:
 		if self.bet != self.min_bet:
 			self.bet //= 2
 
-		self.authority += 5
+		self.authority += 3
 
 	def lose(self):
 		self.balance -= self.bet
 		self.bet *= 2
-		self.authority -= 3
+		self.authority -= 5
 
 	def wait(self, result):
 		if result:
-			self.authority -= 0.5
+			self.authority -= 1
 
 		else:
-			self.authority += 1
+			self.authority += 3
 
 
 __all__ = [CSGORun]
