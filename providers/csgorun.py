@@ -55,8 +55,6 @@ class CSGORun:
 				if not r.ok:
 					game_id_numbers[i] = str(j - 1)
 
-					print(game_id)
-
 					break
 
 		self.log('[green]Last game found![end]')
