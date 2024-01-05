@@ -60,7 +60,7 @@ class CSGORun:
 					break
 
 		self.log('[green]Last game found![end]')
-		
+
 		return int(game_id)
 
 	@staticmethod
@@ -270,6 +270,8 @@ class CSGORun:
 		except:
 			self.log('[red]Data file is invalid![end]')
 
+			return
+
 	def save_model(self, genome):
 		self.log('[yellow]Saving model...[end]')
 
@@ -454,7 +456,7 @@ class CSGORun:
 			players.append(Player())
 
 		while self.games_data:
-			data = self.games_data.pop()
+			data = self.games_data.pop(0)
 
 			if self.real:
 				return nets[0].activate(data)[0]

@@ -266,7 +266,7 @@ i {
 	width: 75%;
 	height: 450px;
 	box-sizing: border-box;
-	background: #30353A;
+	background: hsl(0, 0%, 20%);
 	border-radius: 10px;
 	color: white;
 	font-family: Menlo, Monaco, 'Consolas', 'Courier New', 'Courier';
@@ -274,7 +274,6 @@ i {
 	text-align: left;
 	margin: auto;
 	padding: 10px;
-	
 }
 
 #typed-cursor {
@@ -284,22 +283,42 @@ i {
 	animation: blink 0.7s infinite;
 }
 
-@keyframes blink{
-		0% { opacity: 1; }
-		50% { opacity: 0; }
-		100% { opacity: 1; }
-}
-@-webkit-keyframes blink{
-		0% { opacity: 1; }
-		50% { opacity: 0; }
-		100% { opacity: 1; }
-}
-@-moz-keyframes blink{
-		0% { opacity: 1; }
-		50% { opacity: 0; }
-		100% { opacity: 1; }
+@keyframes blink {
+		0% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
 }
 
-#terminal .yellow { color: yellow;}
-#terminal .green { color: lawngreen;}
+@-webkit-keyframes blink {
+		0% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+}
+
+@-moz-keyframes blink {
+		0% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+}
+
+#terminal .yellow { color: yellow; }
+#terminal .green { color: lawngreen; }
 #terminal .red { color: red;}
