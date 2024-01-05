@@ -62,22 +62,6 @@ i {
 		overflow: hidden;
 		opacity: 1;
 }
-
-footer {
-	font-size: 1rem;
-	text-align: right;
-	-webkit-backface-visibility: hidden;
-		backface-visibility: hidden;
-}
-
-footer a {
-	text-decoration: none;
-}
-
-footer span {
-	color: #cf000f;
-}
-
 #bg {
 		height: 100%;
 		width: 100%;

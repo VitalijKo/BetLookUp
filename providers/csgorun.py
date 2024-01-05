@@ -39,10 +39,10 @@ class CSGORun:
 	def last_game_id(self):
 		self.log('[yellow]Finding last game...[end]')
 
-		game_id_numbers = list('4000000')
+		game_id_numbers = list('0000000')
 
 		for i in range(len(game_id_numbers)):
-			for j in range(9):
+			for j in range(10):
 				if not i and not j:
 					j = 1
 
@@ -52,13 +52,15 @@ class CSGORun:
 
 				r = requests.get(f'{self.url}{game_id}')
 
-				if r.status_code != 200:
+				if not r.ok:
 					game_id_numbers[i] = str(j - 1)
+
+					print(game_id)
 
 					break
 
 		self.log('[green]Last game found![end]')
-
+		
 		return int(game_id)
 
 	@staticmethod
@@ -68,15 +70,23 @@ class CSGORun:
 		crash = game['crash']
 		bets = game['bets']
 
+		coefficient = 0
+		coefficient_auto = 0
+		deposit = 0
+		withdraw = 0
+
 		for bet in bets:
-			coefficient = bet['coefficient']
-			coefficient_auto = bet['coefficient_auto']
-			deposit = bet['deposit']
-			withdraw = bet['withdraw']
+			coefficient += bet['coefficient'] or 0
+			coefficient_auto += bet['coefficient_auto'] or 0
+			deposit += bet['deposit'] or 0
+			withdraw += bet['withdraw'] or 0
 
-			game_data += [coefficient, coefficient_auto, deposit, withdraw]
+		coefficient = round(coefficient / len(bets), 2)
+		coefficient_auto = round(coefficient_auto / len(bets), 2)
+		deposit = round(deposit / len(bets), 2)
+		withdraw = round(withdraw / len(bets), 2)
 
-		game_data.append(crash)
+		game_data = [coefficient, coefficient_auto, deposit, withdraw, crash]
 
 		return game_data
 
@@ -113,8 +123,8 @@ class CSGORun:
 		for i in range(len(bets)):
 			bet = game_data['bets'][i]
 
-			coefficient = bet['coefficient']
-			coefficient_auto = bet['coefficientAuto']
+			coefficient = bet['coefficient'] or 0
+			coefficient_auto = bet['coefficientAuto'] or 0
 			deposit = bet['deposit']['amount'] or 0
 			withdraw = bet['withdraw']['amount'] or 0
 
@@ -203,18 +213,26 @@ class CSGORun:
 			crash = game['crash']
 			bets = game['bets']
 
-			for bet in bets:
-				coefficient = bet['coefficient']
-				coefficient_auto = bet['coefficient_auto']
-				deposit = bet['deposit']
-				withdraw = bet['withdraw']
+			coefficient = 0
+			coefficient_auto = 0
+			deposit = 0
+			withdraw = 0
 
-				game_data += f'{coefficient},{coefficient_auto},{deposit},{withdraw},'
+			for bet in bets:
+				coefficient += bet['coefficient'] or 0
+				coefficient_auto += bet['coefficient_auto'] or 0
+				deposit += bet['deposit'] or 0
+				withdraw += bet['withdraw'] or 0
+
+			coefficient = round(coefficient / len(bets), 2)
+			coefficient_auto = round(coefficient_auto / len(bets), 2)
+			deposit = round(deposit / len(bets), 2)
+			withdraw = round(withdraw / len(bets), 2)
+
+			game_data += f'{coefficient},{coefficient_auto},{deposit},{withdraw},{crash}'
 
 			if 'None' in game_data:
 				continue
-
-			game_data += str(crash)
 
 			last_games.append(game_data)
 
@@ -239,7 +257,7 @@ class CSGORun:
 		self.log('[yellow]Loading data...[end]')
 
 		try:
-			with open(self.data_path) as data_file:
+			with open(self.data_path, 'r') as data_file:
 				self.games_data = data_file.read().splitlines()
 		except:
 			self.log('[red]Data file not found![end]')
@@ -251,8 +269,6 @@ class CSGORun:
 				self.games_data[i] = list(map(float, self.games_data[i].split(',')))
 		except:
 			self.log('[red]Data file is invalid![end]')
-
-		self.log('[green]Data loaded![end]')
 
 	def save_model(self, genome):
 		self.log('[yellow]Saving model...[end]')
@@ -272,8 +288,6 @@ class CSGORun:
 		except:
 			return
 
-		self.log('[green]Model loaded![end]')
-
 		return genome
 
 	def train_model(self, multiplier):
@@ -291,7 +305,7 @@ class CSGORun:
 
 		self.multiplier = multiplier
 
-		winner = p.run(self.simulation, 10)
+		winner = p.run(self.simulation, 100)
 
 		self.multiplier = None
 
@@ -301,6 +315,8 @@ class CSGORun:
 
 	def predict(self, balance, bet):
 		self.log()
+
+		data_file = open(self.data_path, 'a')
 
 		config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, self.config_path)
 
@@ -328,8 +344,14 @@ class CSGORun:
 
 			self.games_data = [[]]
 
+			game_data = ''
+
 			for game in last_games:
-				self.games_data[0] += self.game_to_list(game)
+				game = self.game_to_list(game)
+	
+				self.games_data[0] += game
+
+				game_data += ','.join(list(map(str, game))) + ','
 
 			choice = self.simulation(genomes, config)
 
@@ -346,6 +368,8 @@ class CSGORun:
 					game = self.get_game_data(last_game_id)
 
 					if not game:
+						data_file.close()
+
 						return
 
 					elif isinstance(game, dict):
@@ -358,6 +382,10 @@ class CSGORun:
 			last_games.append(game)
 
 			crash = game['crash']
+
+			game_data += f'{crash}\n'
+
+			data_file.write(game_data)
 
 			if choice == 1:
 				if crash >= 1.5:
@@ -376,7 +404,7 @@ class CSGORun:
 					color = 'red'
 
 			else:
-				player.wait(crash)
+				player.wait(crash >= 1.5)
 
 				if crash >= 1.5:
 					wrong += 1
@@ -387,6 +415,8 @@ class CSGORun:
 					color = 'green'
 
 			if not player.alive:
+				data_file.close()
+
 				self.log('[red]You lost![end]')
 				self.log(f'[red]Max balance:[end] {max_balance}')
 
@@ -398,11 +428,21 @@ class CSGORun:
 	def simulation(self, genomes, config):
 		nets = []
 		players = []
+		min_balance = 1000000
 		max_balance = 0
-		x = 0
+		stakes = 0
+		skips = 0
 
 		if not self.real:
 			self.load_data()
+
+			random.shuffle(self.games_data)
+
+			if len(self.games_data) >= 10000:
+				stop = len(self.games_data) // 10
+
+			self.games_data = self.games_data[:stop]
+
 			self.log('[yellow]Training model...[end]')
 
 		for _, g in genomes:
@@ -414,25 +454,21 @@ class CSGORun:
 			players.append(Player())
 
 		while self.games_data:
-			x += 1
-
-			i = random.randint(0, len(self.games_data) - 1)
-
-			data = self.games_data.pop(i)
+			data = self.games_data.pop()
 
 			if self.real:
-				return max(nets[0].activate(data))
+				return nets[0].activate(data)[0]
 
-			game = data[:205]
+			game = data[:25]
 
-			result = float(data[205]) >= 1.5
+			result = float(data[25]) >= 1.5
 
 			for i in range(len(players)):
-				output = nets[i].activate(game)
-
-				choice = max(output)
+				choice = nets[i].activate(game)[0]
 
 				if choice == 1:
+					stakes += 1
+
 					if result:
 						players[i].win()
 
@@ -440,6 +476,8 @@ class CSGORun:
 						players[i].lose()
 
 				else:
+					skips += 1
+
 					players[i].wait(result)
 
 			remaining_players = 0
@@ -450,21 +488,31 @@ class CSGORun:
 
 					genomes[i][1].fitness = players[i].authority
 
-					print(x, genomes[i][1].fitness)
-
 					if players[i].balance > max_balance:
 						max_balance = players[i].balance
 
+					elif players[i].balance < min_balance:
+						min_balance = players[i].balance
+
+				else:
+					genomes[i][1].fitness = 0
+
 			if not remaining_players:
 				break
+
+		if not self.real:
+			print(f'Max balance: {max_balance}')
+			print(f'Min balance: {min_balance}')
+			print(f'Stakes: {stakes}')
+			print(f'Skips: {skips}')
 
 		return choice
 
 
 class Player:
-	def __init__(self, min_balance=2000, balance=10000, min_bet=100):
-		self.min_balance = min_balance
+	def __init__(self, balance=10000, min_balance=2000, min_bet=100):
 		self.balance = balance
+		self.min_balance = self.balance // min_bet
 		self.min_bet = min_bet
 		self.bet = min_bet
 		self.authority = 10
@@ -484,14 +532,14 @@ class Player:
 	def lose(self):
 		self.balance -= self.bet
 		self.bet *= 2
-		self.authority -= 5
+		self.authority -= 3
 
 	def wait(self, result):
 		if result:
-			self.authority -= 1
+			self.authority -= 2
 
 		else:
-			self.authority += 3
+			self.authority += 5
 
 
 __all__ = [CSGORun]
