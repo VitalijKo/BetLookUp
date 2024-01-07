@@ -305,7 +305,7 @@ class CSGORun:
 
 		self.multiplier = multiplier
 
-		winner = p.run(self.simulation, 100)
+		winner = p.run(self.simulation, 50)
 
 		self.multiplier = None
 
