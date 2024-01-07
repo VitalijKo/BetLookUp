@@ -539,7 +539,7 @@ class Player:
 			self.authority -= 2
 
 		else:
-			self.authority += 5
+			self.authority += 4
 
 
 __all__ = [CSGORun]
